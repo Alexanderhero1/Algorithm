@@ -1,0 +1,236 @@
+TreeNode* trees[50];
+    
+    for (int k = 0; k < 50; k++)
+    {
+        for (int j = 0; j < 10000; j++)
+        {
+            treeInsert(trees[k],rand());
+        }
+    }
+
+#include <iostream>
+#include <cstdlib> // для функций rand() и srand()
+#include <ctime> // для функции time()
+#include <bits/stdc++.h>
+#include <stdio.h>
+using namespace std;
+
+unsigned long tabs = 0; //Для создания отступов
+//Кол-во отступов высчитывается по кол-ву рекурсивного вхождения при выводе в фукцию print
+
+//Структура ветки
+struct Branch
+{
+    unsigned long Data; //Поле данных
+    Branch *LeftBranch; //УКАЗАТЕЛИ на соседние веточки
+    Branch *RightBranch;
+};
+
+//Функция внесения данных
+void Add(unsigned long aData, Branch *&aBranch)
+{
+    //Если ветки не существует
+    if (!aBranch)
+    { //создадим ее и зададим в нее данные
+        aBranch = new Branch;
+        aBranch->Data = aData;
+        aBranch->LeftBranch = 0;
+        aBranch->RightBranch = 0;
+        return;
+    }
+    else //Иначе сверим вносимое
+    if (aBranch->Data>aData)
+    { //Если оно меньше того, что в этой ветке - добавим влево
+        Add(aData, aBranch->LeftBranch);
+    }
+    else
+    { //Иначе в ветку справа
+        Add(aData, aBranch->RightBranch);
+    };
+}
+
+//Функция вывода дерева
+void print(Branch *aBranch)
+{
+    if (!aBranch) return; //Если ветки не существует - выходим. Выводить нечего
+    tabs++; //Иначе увеличим счетчик рекурсивно вызванных процедур
+
+    //Который будет считать нам отступы для красивого вывода
+    print(aBranch->LeftBranch); //Выведем ветку и ее подветки слева
+
+    for (unsigned long i = 0; i<tabs; i++)
+    {
+        cout << " "; //Потом отступы
+    }
+
+    cout << aBranch->Data << endl; //Данные этой ветки
+    print(aBranch->RightBranch);//И ветки, что справа
+    tabs--; //После уменьшим кол-во отступов
+}
+
+void FreeTree(Branch *aBranch)
+{
+    if (!aBranch) return;
+    FreeTree(aBranch->LeftBranch);
+    FreeTree(aBranch->RightBranch);
+    delete aBranch;
+}
+
+/* Узел двоичного дерева содержит данные,
+указатель на левого ребенка и
+указатель на правого ребенка */
+
+class node {
+
+public:
+
+    int data;
+    node* left;
+    node* right;
+
+};
+
+/* Возвращает высоту двоичного дерева */
+int height(node* node);
+
+/* Возвращает true, если двоичное дерево
+с корнем, поскольку корень сбалансирован по высоте */
+bool isBalanced(node* root)
+{
+    int lh; /* для высоты левого поддерева */
+    int rh; /* для высоты правого поддерева */
+
+    /* Если дерево пусто, вернуть true */
+    if (root == NULL)
+    {
+        return 1;
+    }
+
+    /* Получить высоту левого и правого поддеревьев */
+    lh = height(root->left);
+    rh = height(root->right);
+
+    if (abs(lh - rh) <= 1 && isBalanced(root->left) && isBalanced(root->right))
+    {
+        return 1;
+    }
+
+    /* Если мы достигнем здесь, то
+    дерево не сбалансировано по высоте */
+    return 0;
+}
+
+/* ПОЛЕЗНЫЕ ФУНКЦИИ ДЛЯ ТЕСТИРОВАНИЯ isBalanced () ФУНКЦИЯ */
+/* возвращает максимум два целых числа */
+int max(int a, int b)
+{
+    return (a >= b) ? a : b;
+}
+
+/* Функция вычисляет «высоту»
+дерева. Высота это число
+узлы вдоль самого длинного пути от
+корневой узел до самого дальнего конечного узла. */
+
+int height(node* node)
+{
+    /* базовое дерево пусто */
+    if (node == NULL)
+    {
+        return 0;
+    }
+
+    /* Если дерево не пустое, то
+    высота = 1 + максимум слева
+    высота и правая высота */
+    return 1 + max(height(node->left),
+                   height(node->right));
+}
+
+/* Вспомогательная функция, которая выделяет
+новый узел с заданными данными
+и NULL левый и правый указатели. */
+
+node* newNode(int data)
+{
+    node* Node = new node();
+    Node->data = data;
+    Node->left = NULL;
+    Node->right = NULL;
+
+    return (Node);
+}
+
+int * bs(const int * arr, size_t size, int value)
+{
+    int * p;
+    return ( size < 2 ) ? ( *arr == value ) ? (int*)arr :
+    NULL : ( p = bs(arr, size/2 + (size & 1), value) ) ?
+    p : bs(arr + size/2 + (size & 1), size/2, value);
+}
+
+#define SIZE 10
+
+// Код драйвера
+
+int main()
+{
+    Branch *Root = 0;
+    for (char counter_1 = 0; counter_1 < 3; counter_1++)
+    {
+        unsigned long Mass[4];
+        srand(static_cast<unsigned long>(time(0)));
+        for (unsigned long counter_2 = 0; counter_2 < 4; counter_2++)
+        {
+            Mass[counter_2] = rand() % 16 + 1;
+        }
+
+        for (unsigned long counter_2 = 0; counter_2 < 4; counter_2++)
+        {
+            Add(Mass[counter_2], Root);
+        }
+
+        print(Root);
+        FreeTree(Root);
+        cin.get();
+    }
+
+    node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->left->left->left = newNode(8);
+
+    if (isBalanced(root))
+    {
+        cout << "Tree is balanced";
+    }
+    else
+    {
+        cout << "Tree is not balanced";
+    }
+
+    int arr[SIZE] = { 3, 1, 5, 0, 9, 8, 2, 7, 4, 6 }, i;
+
+    printf("Array: ");
+    for ( i = 0; i < SIZE; ++i )
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    while ( printf("Value 2 search: ") && scanf("%d", &i) == 1 )
+    {
+        int * f = bs(arr, SIZE, i);
+        if ( f )
+        {
+            printf("Found at index %d\n", f - arr);
+        }
+        else
+        {
+            printf("Not found!\n");
+        }
+    }
+    return 0;
+}
